@@ -5,17 +5,26 @@ const useStyles = makeStyles({
   square: {
     width: '40px',
     height: '40px',
-    outline: '1px solid grey',
     backgroundColor: 'rgba(245,245,240,1)',
-    display: 'inline-block',
   },
+  start: {
+    backgroundColor: 'green',
+  },
+  finish: {
+    backgroundColor: 'red',
+  }
 });
 
-function Square() {
+function Square(props) {
   const classes = useStyles();
+  const extraClass = props.isFinish 
+  ? `${classes.finish}`
+  : props.isStart
+  ? `${classes.start}`
+  : '';
 
   return (
-    <div className={classes.square}></div>
+    <div className={`${classes.square} ${extraClass}`}></div>
   );
 }
 
