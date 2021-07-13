@@ -28,23 +28,6 @@ const Grid = (props) => {
   const [grid, setGrid] = useState({});
   const [squares, setSquares] = useState([]);
 
-  // useEffect(() => {
-  //   const gridSquares = []
-  //   for(let row=0; row < numRow; row++) {
-  //     //const currentSquare = [];
-  //     for(let col=0; col < numCol; col++) {
-  //       gridSquares.push({
-  //         //location: [row, col]
-  //         row,
-  //         col,
-  //         isStart: row === 5 && col === 5,
-  //         isFinish: row === 5 && col === 35,
-  //       });
-  //     }
-  //     //gridSquares.push(currentSquare);
-  //   }
-  //   setSquares(gridSquares);
-  // }, [numRow, numCol]);
   useEffect(() => {
     const gridSquares = []
     const grid = new SquareGrid(numRow, numCol);
@@ -57,32 +40,35 @@ const Grid = (props) => {
         row,
         isStart: row === START_ROW && col === START_COL,
         isFinish: row === FINISH_ROW && col === FINISH_COL,
+        isVisited: false,
       });
     });
     setSquares(gridSquares);
   }, [numRow, numCol]);
 
-  // const animate = (visitedSquaresInOrder) => {
-  //   for(let i = 0; i < visitedSquaresInOrder.length(); i++){
-  //     setTimeout(() => {
-  //       const id = visitedSquaresInOrder[i];
-
-  //       })
-  //     })
-  //   }
-  // }
+  const animate = visitedSquaresInOrder => {
+    for(let i = 0; i < visitedSquaresInOrder.length; i++) {
+      setTimeout(() => {
+        const id = visitedSquaresInOrder[i];
+        let newSquares = [...squares];
+        newSquares[id].isVisited = true;
+        setSquares(newSquares);
+      }, 25*i);
+    }
+  }
 
   const visualizeBFS = () => {
     const start = grid.toId(START_COL, START_ROW);
     const target = grid.toId(FINISH_COL, FINISH_ROW);
     const visitedSquareInOrder = bfs(grid, start, target);
-    
+
+    animate(visitedSquareInOrder);
   }
   
   const handleClick = () => {
+    console.log("clicked");
     visualizeBFS();
   }
-
 
   return (
     <>
@@ -90,7 +76,7 @@ const Grid = (props) => {
       <div className={classes.grid}>
         {
           squares.map((square) => {
-            const {id, row, col, isStart, isFinish} = square;
+            const {id, row, col, isStart, isFinish, isVisited} = square;
             return (
               <Square
                 key={id}
@@ -98,6 +84,7 @@ const Grid = (props) => {
                 col={col}
                 isStart={isStart}
                 isFinish={isFinish}
+                isVisited={isVisited}
               />
             );
           })

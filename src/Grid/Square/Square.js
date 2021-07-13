@@ -1,7 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/styles';
-//reached rgb(197 197 190);
-//frontier rgb(137 137 134);
+//frontier rgba(137, 137, 134, 1);
 
 const useStyles = makeStyles({
   square: {
@@ -14,7 +13,10 @@ const useStyles = makeStyles({
   },
   finish: {
     backgroundColor: 'red',
-  }
+  },
+  visited: {
+    backgroundColor: 'rgba(197, 197, 190, 1)',
+  },
 });
 
 function Square(props) {
@@ -23,6 +25,8 @@ function Square(props) {
   ? `${classes.finish}`
   : props.isStart
   ? `${classes.start}`
+  : props.isVisited
+  ? `${classes.visited}`
   : '';
 
   return (
