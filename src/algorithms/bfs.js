@@ -7,12 +7,14 @@ export function bfs(grid, start, target) {
   while(!(frontier.length === 0)) {
     let current = frontier.shift();
 
+    if(grid.isWall(current.toString())) continue;
+    
     if(current === target) break;
 
     grid.neighbors(current).forEach(next => {
       if(!cameFrom[next]) {
         frontier.push(next);
-        cameFrom[next] = current
+        cameFrom[next] = current;
         visitedSquaresInOrder.push(next)
       }
     });

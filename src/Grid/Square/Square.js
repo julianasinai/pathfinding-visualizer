@@ -1,6 +1,5 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/styles';
-//frontier rgba(137, 137, 134, 1);
 
 const useStyles = makeStyles({
   square: {
@@ -17,6 +16,9 @@ const useStyles = makeStyles({
   visited: {
     backgroundColor: 'rgba(197, 197, 190, 1)',
   },
+  wall: {
+    backgroundColor: 'rgba(137, 137, 134, 1)',
+  },
 });
 
 function Square(props) {
@@ -25,12 +27,19 @@ function Square(props) {
   ? `${classes.finish}`
   : props.isStart
   ? `${classes.start}`
+  : props.isWall
+  ?`${classes.wall}`
   : props.isVisited
   ? `${classes.visited}`
   : '';
 
   return (
-    <div className={`${classes.square} ${extraClass}`}></div>
+    <div 
+      className={`${classes.square} ${extraClass}`}
+      onMouseDown={() => props.onMouseDown(props.id)}
+      onMouseEnter={() => props.onMouseEnter(props.id)}
+      onMouseUp={() => props.onMouseUp(props.id)}
+    ></div>
   );
 }
 

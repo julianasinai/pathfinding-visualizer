@@ -7,16 +7,13 @@ import {bfs} from '../algorithms/bfs';
 const START_ROW = 5;
 const START_COL = 5;
 const FINISH_ROW = 5;
-const FINISH_COL = 35;
+const FINISH_COL = 10;
 
 const useStyles = makeStyles({
   grid: {
-    // display: 'flex',
-    // flexWrap: 'wrap',
-    // justifyContent: 'center',
     display: 'grid',
     gridTemplateColumns: 'repeat(50, 25px)',//'repeat(50 1fr)'
-    gridGap: '5px',
+    gridGap: '3px',
   },
 });
 
@@ -27,6 +24,7 @@ const Grid = (props) => {
   const numCol = props.NUM_COL;
   const [grid, setGrid] = useState({});
   const [squares, setSquares] = useState([]);
+  const [mousePressed, setMousePressed] = useState(false);
 
   useEffect(() => {
     const gridSquares = []
@@ -41,6 +39,7 @@ const Grid = (props) => {
         isStart: row === START_ROW && col === START_COL,
         isFinish: row === FINISH_ROW && col === FINISH_COL,
         isVisited: false,
+        isWall: false,
       });
     });
     setSquares(gridSquares);
@@ -70,21 +69,53 @@ const Grid = (props) => {
     visualizeBFS();
   }
 
+  const toggleWall = (squares, id) => {
+    let newSquares = [...squares]
+    newSquares[id].isWall = !newSquares[id].isWall;
+    let newGrid = grid;
+    if(newSquares[id].isWall) {
+      newGrid.walls.add(id);
+    }
+    setGrid(newGrid);
+    return newSquares;
+  }
+
+  const handleMouseDown = id => {
+    const newSquares = toggleWall(squares, id);
+    setSquares(newSquares);
+    setMousePressed(true);
+  }
+
+  const handleMouseEnter = id => {
+    if(!mousePressed) return;
+    const newSquares = toggleWall(squares, id);
+    setSquares(newSquares);
+  }
+
+  const handleMouseUp = () => {
+    setMousePressed(false);
+  }
+
   return (
     <>
       <button onClick={handleClick}>Visualize</button>
       <div className={classes.grid}>
         {
           squares.map((square) => {
-            const {id, row, col, isStart, isFinish, isVisited} = square;
+            const {id, row, col, isStart, isFinish, isVisited, isWall} = square;
             return (
               <Square
+                id={id}
                 key={id}
                 row={row}
                 col={col}
                 isStart={isStart}
                 isFinish={isFinish}
                 isVisited={isVisited}
+                isWall={isWall}
+                onMouseDown={(id) => handleMouseDown(id)}
+                onMouseEnter={(id) => handleMouseEnter(id)}
+                onMouseUp={() => handleMouseUp()}
               />
             );
           })
