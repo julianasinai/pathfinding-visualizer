@@ -19,6 +19,14 @@ export function bfs(grid, start, target) {
       }
     });
   }
-  return visitedSquaresInOrder;
-  //Retornar cameFrom depois
-}
+  let current = target;
+  let shortestPath = [];
+  while(current !== start) {
+    shortestPath.push(current);
+    current = cameFrom[current]
+  }
+  shortestPath.push(start)
+  shortestPath.reverse()
+
+  return {visitedSquaresInOrder, shortestPath};
+};

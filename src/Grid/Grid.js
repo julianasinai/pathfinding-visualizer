@@ -40,34 +40,53 @@ const Grid = (props) => {
         isFinish: row === FINISH_ROW && col === FINISH_COL,
         isVisited: false,
         isWall: false,
+        inShortestPath: false,
       });
     });
     setSquares(gridSquares);
   }, [numRow, numCol]);
 
-  const animate = visitedSquaresInOrder => {
-    for(let i = 0; i < visitedSquaresInOrder.length; i++) {
+  const animateShortestPath = shortestPath => {
+    for(let i = 0; i < shortestPath.length; i++) {
+      let id = shortestPath[i]
+      console.log(id)
       setTimeout(() => {
+        let newSquares = [...squares];
+        newSquares[id].inShortestPath = true;
+        setSquares(newSquares);
+      }, 10*i);
+    }
+  };
+
+  const animate = (visitedSquaresInOrder, shortestPath) => {
+    for(let i = 0; i <= visitedSquaresInOrder.length; i++) {
+      setTimeout(() => {
+        if(i === visitedSquaresInOrder.length) {
+          animateShortestPath(shortestPath);
+          return;
+        }
         const id = visitedSquaresInOrder[i];
         let newSquares = [...squares];
         newSquares[id].isVisited = true;
         setSquares(newSquares);
       }, 25*i);
     }
-  }
+  };
 
   const visualizeBFS = () => {
     const start = grid.toId(START_COL, START_ROW);
     const target = grid.toId(FINISH_COL, FINISH_ROW);
-    const visitedSquareInOrder = bfs(grid, start, target);
+    const result = bfs(grid, start, target);
+    const visitedSquareInOrder = result.visitedSquaresInOrder;
+    const shortestPath = result.shortestPath;
 
-    animate(visitedSquareInOrder);
-  }
+    animate(visitedSquareInOrder, shortestPath);
+  };
   
   const handleClick = () => {
     console.log("clicked");
     visualizeBFS();
-  }
+  };
 
   const toggleWall = (squares, id) => {
     let newSquares = [...squares]
@@ -102,7 +121,7 @@ const Grid = (props) => {
       <div className={classes.grid}>
         {
           squares.map((square) => {
-            const {id, row, col, isStart, isFinish, isVisited, isWall} = square;
+            const {id, row, col, isStart, isFinish, isVisited, isWall, inShortestPath} = square;
             return (
               <Square
                 id={id}
@@ -113,6 +132,7 @@ const Grid = (props) => {
                 isFinish={isFinish}
                 isVisited={isVisited}
                 isWall={isWall}
+                inShortestPath={inShortestPath}
                 onMouseDown={(id) => handleMouseDown(id)}
                 onMouseEnter={(id) => handleMouseEnter(id)}
                 onMouseUp={() => handleMouseUp()}

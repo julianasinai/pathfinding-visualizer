@@ -19,6 +19,9 @@ const useStyles = makeStyles({
   wall: {
     backgroundColor: 'rgba(137, 137, 134, 1)',
   },
+  shortestPath : {
+    backgroundColor: 'rgba(204, 208, 17, 1)',
+  },
 });
 
 function Square(props) {
@@ -29,6 +32,8 @@ function Square(props) {
   ? `${classes.start}`
   : props.isWall
   ?`${classes.wall}`
+  : props.inShortestPath
+  ? `${classes.shortestPath}`
   : props.isVisited
   ? `${classes.visited}`
   : '';
