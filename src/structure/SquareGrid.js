@@ -1,12 +1,15 @@
 const NEIGHBORS_LOCATION = [[1,0], [-1,0], [0,-1], [0,1]];//Right, Left, Top, Bottom
 
+
 class Graph {
   constructor(numNodes) {
     this.numNodes = numNodes;
     this.edges = {};
-    
+    this.weights = {};
+
     for(let id = 0; id < numNodes; id++) {
-      this.edges[id] = []
+      this.edges[id] = [];
+      this.weights[id] = 1;
     }
   }
 }
@@ -49,5 +52,13 @@ export default class SquareGrid extends Graph {
   
   neighbors(id) {
     return this.edges[id]
+  };
+
+  cost(fromId, toId) {
+    return this.weights[toId]
+  };
+
+  setSquareWeight(id, weight) {
+    this.weights[id] = weight
   };
 }
