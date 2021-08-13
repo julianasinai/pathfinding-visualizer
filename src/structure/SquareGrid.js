@@ -1,6 +1,5 @@
 const NEIGHBORS_LOCATION = [[1,0], [-1,0], [0,-1], [0,1]];//Right, Left, Top, Bottom
 
-
 class Graph {
   constructor(numNodes) {
     this.numNodes = numNodes;
