@@ -49,13 +49,15 @@ const Grid = (props) => {
   }, [numRow, numCol]);
 
   const animateShortestPath = shortestPath => {
-    for(let i = 0; i < shortestPath.length; i++) {
-      let id = shortestPath[i]
-      setTimeout(() => {
-        let newSquares = [...squares];
-        newSquares[id].inShortestPath = true;
-        setSquares(newSquares);
-      }, 10*i);
+    if(shortestPath) {
+      for(let i = 0; i < shortestPath.length; i++) {
+        let id = shortestPath[i]
+        setTimeout(() => {
+          let newSquares = [...squares];
+          newSquares[id].inShortestPath = true;
+          setSquares(newSquares);
+        }, 10*i);
+      }
     }
   };
 
@@ -86,7 +88,6 @@ const Grid = (props) => {
       // Dijkstra
       case 1:
         result = dijskstra(grid, start, target);
-        console.log("ho")
         break;
       default:
         break;

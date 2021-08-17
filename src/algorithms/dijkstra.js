@@ -12,7 +12,7 @@ export function dijskstra(grid, start, target) {
   while(!frontier.empty()) {
     let current = frontier.dequeue();
 
-    if(grid.isWall(current.toString())) continue;
+    if(grid.isWall(current.id.toString())) continue;
 
     if(current.id === target) break;
     
@@ -27,14 +27,18 @@ export function dijskstra(grid, start, target) {
       }
     });
   }
+
   let current = target;
   let shortestPath = [];
+
+  if(!cameFrom[current]) return {visitedSquaresInOrder, shortestPath};
+
   while(current !== start) {
     shortestPath.push(current);
     current = cameFrom[current];
   }
   shortestPath.push(start);
   shortestPath.reverse();
-
+  console.log("vvv", visitedSquaresInOrder)
   return {visitedSquaresInOrder, shortestPath};
 }

@@ -1,66 +1,58 @@
 export default class PriorityQueue {
   constructor() {
-    this.values = [];
+    this.values = [0];
+    this.currentSize = 0;
   }
 
   enqueue(id, priority) {
     let newNode = new Node(id, priority);
     this.values.push(newNode);
-    this.bubbleUp();
+    this.currentSize += 1;
+    this.percolateUp(this.currentSize);
   }
 
-  bubbleUp() {
-    let current = this.values.length - 1;
-    const currentValue = this.values[current];
-    while(current > 0) {
-      let parent = Math.floor((current - 1)/2);
-      let parentValue = this.values[parent];
-      if( currentValue.priority >= parentValue.priority) break;
-      this.values[parent] = currentValue;
-      this.values[current] = parentValue;
-      current = parent
+  percolateUp(i) {
+    while(Math.floor(i/2) > 0) {
+      if(this.values[i].priority < this.values[Math.floor(i/2)].priority) {
+        let tmp = this.values[Math.floor(i/2)];
+        this.values[Math.floor(i/2)] = this.values[i];
+        this.values[i] = tmp;
+      }
+      i = Math.floor(i/2)
     }
   }
 
   dequeue() {
-    const min = this.values[0]
-    const end = this.values.pop();
-    this.values[0] = end;
-    this.percolateDown();
+    const min = this.values[1];
+    this.values[1] = this.values[this.currentSize];
+    this.currentSize -= 1
+    this.values.pop();
+    this.percolateDown(1);
     return min;
   }
 
-  percolateDown() {
-    let current = 0
-    const length = this.values.length - 1;
-    const currentValue = this.values[0];
-    while(true) {
-      let leftChild = 2*current + 1;
-      let rightChild = 2*current + 2;
-      let leftChildValue, rightChildValue;
-      let swap = null;
+  percolateDown(i) {
+    while(i*2 <= this.currentSize) {
+      let mc = this.minChild(i)
+      if(this.values[i].priority > this.values[mc].priority) {
+        let tmp = this.values[i];
+        this.values[i] = this.values[mc];
+        this.values[mc] = tmp;
+      }
+      i = mc
+    } 
+  }
 
-      if(leftChild < length) {
-        leftChildValue = this.values[leftChild];
-        if(leftChildValue.priority < currentValue.priority) {
-          swap = leftChild;
-        }
-      }
-      if(rightChild < length) {
-        rightChildValue = this.values[rightChild];
-        if((swap === null && rightChildValue.priority < currentValue.priority) || (swap !== null && rightChildValue.priority < leftChildValue.priority)) {
-          swap = rightChild;
-        }
-      }
-      if(swap === null) break;
-        this.values[current] = this.values[swap];
-        this.values[swap] = currentValue;
-        current = swap;
+  minChild(i) {
+    if((i*2 + 1) > this.currentSize) return i*2;
+    else {
+      if(this.values[i*2].priority < this.values[i*2 + 1].priority) return i*2;
+      else return i*2 + 1;
     }
   }
 
   empty() {
-    return !this.values;
+    return this.currentSize === 0;
   }
 }
 

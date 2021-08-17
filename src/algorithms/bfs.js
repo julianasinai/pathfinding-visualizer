@@ -21,6 +21,9 @@ export function bfs(grid, start, target) {
   }
   let current = target;
   let shortestPath = [];
+
+  if(!cameFrom[current]) return {visitedSquaresInOrder, shortestPath};
+
   while(current !== start) {
     shortestPath.push(current);
     current = cameFrom[current];
