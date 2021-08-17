@@ -2,7 +2,7 @@ export function bfs(grid, start, target) {
   let frontier = [start];
   let cameFrom = {};
   cameFrom[start] = null;
-  let visitedSquaresInOrder = [start]
+  let visitedSquaresInOrder = [start];
   
   while(!(frontier.length === 0)) {
     let current = frontier.shift();
@@ -15,7 +15,7 @@ export function bfs(grid, start, target) {
       if(!cameFrom[next]) {
         frontier.push(next);
         cameFrom[next] = current;
-        visitedSquaresInOrder.push(next)
+        visitedSquaresInOrder.push(next);
       }
     });
   }
@@ -23,10 +23,10 @@ export function bfs(grid, start, target) {
   let shortestPath = [];
   while(current !== start) {
     shortestPath.push(current);
-    current = cameFrom[current]
+    current = cameFrom[current];
   }
-  shortestPath.push(start)
-  shortestPath.reverse()
+  shortestPath.push(start);
+  shortestPath.reverse();
 
   return {visitedSquaresInOrder, shortestPath};
 };

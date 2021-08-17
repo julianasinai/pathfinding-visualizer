@@ -3,6 +3,7 @@ import Square from './Square/Square';
 import { makeStyles } from '@material-ui/styles';
 import SquareGrid from '../structure/SquareGrid';
 import {bfs} from '../algorithms/bfs';
+import { dijskstra } from '../algorithms/dijkstra';
 
 const START_ROW = 5;
 const START_COL = 5;
@@ -25,6 +26,7 @@ const Grid = (props) => {
   const [grid, setGrid] = useState({});
   const [squares, setSquares] = useState([]);
   const [mousePressed, setMousePressed] = useState(false);
+  const [algo, setAlgo] = useState(0);
 
   useEffect(() => {
     const gridSquares = []
@@ -49,7 +51,6 @@ const Grid = (props) => {
   const animateShortestPath = shortestPath => {
     for(let i = 0; i < shortestPath.length; i++) {
       let id = shortestPath[i]
-      console.log(id)
       setTimeout(() => {
         let newSquares = [...squares];
         newSquares[id].inShortestPath = true;
@@ -73,10 +74,24 @@ const Grid = (props) => {
     }
   };
 
-  const visualizeBFS = () => {
+  const visualize = () => {
     const start = grid.toId(START_COL, START_ROW);
     const target = grid.toId(FINISH_COL, FINISH_ROW);
-    const result = bfs(grid, start, target);
+    let result;
+    switch(algo) {
+      // BFS
+      case 0: 
+        result = bfs(grid, start, target);
+        break;
+      // Dijkstra
+      case 1:
+        result = dijskstra(grid, start, target);
+        console.log("ho")
+        break;
+      default:
+        break;
+    }
+
     const visitedSquareInOrder = result.visitedSquaresInOrder;
     const shortestPath = result.shortestPath;
 
@@ -85,7 +100,7 @@ const Grid = (props) => {
   
   const handleClick = () => {
     console.log("clicked");
-    visualizeBFS();
+    visualize();
   };
 
   const toggleWall = (squares, id) => {
@@ -115,8 +130,16 @@ const Grid = (props) => {
     setMousePressed(false);
   }
 
+  const handleChange = event => {
+    setAlgo(Number(event.target.value))
+  }
+
   return (
     <>
+      <select value={algo} onChange={handleChange}>
+        <option value={0}>BFS</option>
+        <option value={1}>Dijkstra</option>
+      </select>
       <button onClick={handleClick}>Visualize</button>
       <div className={classes.grid}>
         {

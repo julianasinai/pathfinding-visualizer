@@ -3,8 +3,8 @@ export default class PriorityQueue {
     this.values = [];
   }
 
-  enqueue(element, priority) {
-    let newNode = new Node(element, priority);
+  enqueue(id, priority) {
+    let newNode = new Node(id, priority);
     this.values.push(newNode);
     this.bubbleUp();
   }
@@ -58,11 +58,15 @@ export default class PriorityQueue {
         current = swap;
     }
   }
+
+  empty() {
+    return !this.values;
+  }
 }
 
 class Node {
-  constructor(val, priority) {
-    this.val = val;
+  constructor(id, priority) {
+    this.id = id;
     this.priority = priority;
   }
 }
