@@ -20,7 +20,6 @@ const useStyles = makeStyles({
 
 const Grid = (props) => {
   const classes = useStyles();
-
   const numRow = props.NUM_ROW;
   const numCol = props.NUM_COL;
   const [grid, setGrid] = useState({});
@@ -29,22 +28,31 @@ const Grid = (props) => {
   const [keyPressed, setKeyPressed] = useState(false);
   const [algo, setAlgo] = useState(0);
 
-  // const handleKeyDown = (event) => {
-  //   if(event.keyCode === 87) {
-  //     setKeyPressed(true);
-  //   }
-  // };
-
-  // const handleKeyUp = (event) => {
-  //   if(event.keyCode === 87) {
-  //     setKeyPressed(false);
-  //   }
-  // };
-
   const handleKeyPress = (event) => {
     if(event.keyCode === 87) {
       setKeyPressed(keyPressed => !keyPressed);
     }
+  }
+
+  const createGrid = () => {
+    const gridSquares = []
+    const grid = new SquareGrid(numRow, numCol);
+    setGrid(grid);
+    Object.keys(grid.edges).forEach((square) => {
+      let [col, row] = grid.fromId(square);
+      gridSquares.push({
+        id: square,
+        col,
+        row,
+        isStart: row === START_ROW && col === START_COL,
+        isFinish: row === FINISH_ROW && col === FINISH_COL,
+        isVisited: false,
+        isWall: false,
+        hasWeight: false,
+        inShortestPath: false,
+      });
+    });
+    return gridSquares;
   }
 
   useEffect(() => {
@@ -70,8 +78,6 @@ const Grid = (props) => {
     });
     setSquares(gridSquares);
     return () => {
-      // window.removeEventListener('keydown', handleKeyDown);
-      // window.removeEventListener('keyup', handleKeyUp);
       window.removeEventListener('keydown', handleKeyPress);
     };
   }, [numRow, numCol]);
@@ -87,7 +93,7 @@ const Grid = (props) => {
         }, 10*i);
       }
     }
-  };
+  }
 
   const animate = (visitedSquaresInOrder, shortestPath) => {
     for(let i = 0; i <= visitedSquaresInOrder.length; i++) {
@@ -102,7 +108,7 @@ const Grid = (props) => {
         setSquares(newSquares);
       }, 25*i);
     }
-  };
+  }
 
   const visualize = () => {
     const start = grid.toId(START_COL, START_ROW);
@@ -125,12 +131,12 @@ const Grid = (props) => {
     const shortestPath = result.shortestPath;
 
     animate(visitedSquareInOrder, shortestPath);
-  };
+  }
   
   const handleClick = () => {
     console.log("clicked");
     visualize();
-  };
+  }
 
   const toggleSquare = (squares, id) => {
     let newSquares = [...squares];
@@ -148,6 +154,11 @@ const Grid = (props) => {
     }
     setGrid(newGrid);
     return newSquares;
+  }
+
+  const clearGrid = () => {
+    const gridSquares = createGrid();
+    setSquares(gridSquares);
   }
 
   const handleMouseDown = id => {
@@ -177,6 +188,7 @@ const Grid = (props) => {
         <option value={1}>Dijkstra</option>
       </select>
       <button onClick={handleClick}>Visualize</button>
+      <button onClick={clearGrid}>Clear Grid</button>
       <div className={classes.grid}>
         {
           squares.map((square) => {
