@@ -26,9 +26,31 @@ const Grid = (props) => {
   const [grid, setGrid] = useState({});
   const [squares, setSquares] = useState([]);
   const [mousePressed, setMousePressed] = useState(false);
+  const [keyPressed, setKeyPressed] = useState(false);
   const [algo, setAlgo] = useState(0);
 
+  // const handleKeyDown = (event) => {
+  //   if(event.keyCode === 87) {
+  //     setKeyPressed(true);
+  //   }
+  // };
+
+  // const handleKeyUp = (event) => {
+  //   if(event.keyCode === 87) {
+  //     setKeyPressed(false);
+  //   }
+  // };
+
+  const handleKeyPress = (event) => {
+    if(event.keyCode === 87) {
+      setKeyPressed(keyPressed => !keyPressed);
+    }
+  }
+
   useEffect(() => {
+    // window.addEventListener('keydown', handleKeyDown);
+    // window.addEventListener('keyup', handleKeyUp);
+    window.addEventListener('keydown', handleKeyPress);
     const gridSquares = []
     const grid = new SquareGrid(numRow, numCol);
     setGrid(grid);
@@ -42,10 +64,16 @@ const Grid = (props) => {
         isFinish: row === FINISH_ROW && col === FINISH_COL,
         isVisited: false,
         isWall: false,
+        hasWeight: false,
         inShortestPath: false,
       });
     });
     setSquares(gridSquares);
+    return () => {
+      // window.removeEventListener('keydown', handleKeyDown);
+      // window.removeEventListener('keyup', handleKeyUp);
+      window.removeEventListener('keydown', handleKeyPress);
+    };
   }, [numRow, numCol]);
 
   const animateShortestPath = shortestPath => {
@@ -104,10 +132,17 @@ const Grid = (props) => {
     visualize();
   };
 
-  const toggleWall = (squares, id) => {
-    let newSquares = [...squares]
-    newSquares[id].isWall = !newSquares[id].isWall;
+  const toggleSquare = (squares, id) => {
+    let newSquares = [...squares];
+    if(keyPressed) {
+      newSquares[id].hasWeight = !newSquares[id].hasWeight; 
+    } else {
+      newSquares[id].isWall = !newSquares[id].isWall;
+    }
     let newGrid = grid;
+    if(newSquares[id].hasWeight) {
+      newGrid.setSquareWeight(id, 15);
+    }
     if(newSquares[id].isWall) {
       newGrid.walls.add(id);
     }
@@ -116,14 +151,14 @@ const Grid = (props) => {
   }
 
   const handleMouseDown = id => {
-    const newSquares = toggleWall(squares, id);
+    const newSquares = toggleSquare(squares, id);
     setSquares(newSquares);
     setMousePressed(true);
   }
 
   const handleMouseEnter = id => {
     if(!mousePressed) return;
-    const newSquares = toggleWall(squares, id);
+    const newSquares = toggleSquare(squares, id);
     setSquares(newSquares);
   }
 
@@ -145,7 +180,7 @@ const Grid = (props) => {
       <div className={classes.grid}>
         {
           squares.map((square) => {
-            const {id, row, col, isStart, isFinish, isVisited, isWall, inShortestPath} = square;
+            const {id, row, col, isStart, isFinish, isVisited, isWall, hasWeight, inShortestPath} = square;
             return (
               <Square
                 id={id}
@@ -156,6 +191,7 @@ const Grid = (props) => {
                 isFinish={isFinish}
                 isVisited={isVisited}
                 isWall={isWall}
+                hasWeight={hasWeight}
                 inShortestPath={inShortestPath}
                 onMouseDown={(id) => handleMouseDown(id)}
                 onMouseEnter={(id) => handleMouseEnter(id)}

@@ -19,6 +19,9 @@ const useStyles = makeStyles({
   wall: {
     backgroundColor: 'rgba(137, 137, 134, 1)',
   },
+  weight: {
+    background: 'repeating-linear-gradient(45deg,#606dbc,#606dbc 10px,#465298 10px,#465298 20px)',
+  },
   shortestPath : {
     backgroundColor: 'rgba(204, 208, 17, 1)',
   },
@@ -32,6 +35,8 @@ function Square(props) {
   ? `${classes.start}`
   : props.isWall
   ?`${classes.wall}`
+  : props.hasWeight
+  ?`${classes.weight}`
   : props.inShortestPath
   ? `${classes.shortestPath}`
   : props.isVisited
@@ -43,7 +48,7 @@ function Square(props) {
       className={`${classes.square} ${extraClass}`}
       onMouseDown={() => props.onMouseDown(props.id)}
       onMouseEnter={() => props.onMouseEnter(props.id)}
-      onMouseUp={() => props.onMouseUp(props.id)}
+      onMouseUp={() => props.onMouseUp()}
     ></div>
   );
 }
