@@ -56,8 +56,6 @@ const Grid = (props) => {
   }
 
   useEffect(() => {
-    // window.addEventListener('keydown', handleKeyDown);
-    // window.addEventListener('keyup', handleKeyUp);
     window.addEventListener('keydown', handleKeyPress);
     const gridSquares = []
     const grid = new SquareGrid(numRow, numCol);
@@ -140,18 +138,24 @@ const Grid = (props) => {
 
   const toggleSquare = (squares, id) => {
     let newSquares = [...squares];
+    let newGrid = grid;
+
     if(keyPressed) {
+      if(!newSquares[id].hasWeight) {
+        newGrid.setSquareWeight(id, 15);
+      } else{
+        newGrid.setSquareWeight(id, 1);
+      }
       newSquares[id].hasWeight = !newSquares[id].hasWeight; 
     } else {
+      if(!newSquares[id].isWall) {
+        newGrid.addWall(id);
+      } else {
+        newGrid.removeWall(id);
+      }
       newSquares[id].isWall = !newSquares[id].isWall;
     }
-    let newGrid = grid;
-    if(newSquares[id].hasWeight) {
-      newGrid.setSquareWeight(id, 15);
-    }
-    if(newSquares[id].isWall) {
-      newGrid.walls.add(id);
-    }
+
     setGrid(newGrid);
     return newSquares;
   }

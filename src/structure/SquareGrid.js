@@ -48,6 +48,14 @@ export default class SquareGrid extends Graph {
   inBounds(x, y) { return 0 <= x && x < this.width && 0 <= y && y < this.height };
 
   isWall(id) { return this.walls.has(id) };
+
+  addWall(id) {
+    this.walls.add(id);
+  }
+
+  removeWall(id) {
+    this.walls.delete(id);
+  }
   
   neighbors(id) {
     return this.edges[id]
