@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import Square from './Square/Square';
-import { makeStyles } from '@material-ui/styles';
 import SquareGrid from '../structure/SquareGrid';
 import { bfs } from '../algorithms/bfs';
 import { dijskstra } from '../algorithms/dijkstra';
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import { makeStyles } from '@material-ui/styles';
 
 const START_ROW = 5;
 const START_COL = 5;
@@ -27,13 +31,9 @@ const Grid = (props) => {
   const [squares, setSquares] = useState([]);
   const [mousePressed, setMousePressed] = useState(false);
   const [keyPressed, setKeyPressed] = useState(false);
-  const [algo, setAlgo] = useState(0);
+  const [algo, setAlgo] = useState(1);
+  const [open, setOpen] = useState(false);
 
-  const handleKeyPress = (event) => {
-    if(event.keyCode === 87) {
-      setKeyPressed(keyPressed => !keyPressed);
-    }
-  }
 
   const createGrid = () => {
     const gridSquares = []
@@ -57,7 +57,26 @@ const Grid = (props) => {
   }
 
   useEffect(() => {
+    const handleKeyPress = (event) => {
+      if(algo === 0) {
+        handleOpen();
+        return;
+      }
+      if(event.keyCode === 87) {
+        setKeyPressed(keyPressed => !keyPressed);
+      }
+    }
     window.addEventListener('keydown', handleKeyPress);
+    if(algo === 0) {
+      handleOpen();
+      setKeyPressed(false)
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [algo]);
+
+  useEffect(() => {
     const gridSquares = []
     const grid = new SquareGrid(numRow, numCol);
     setGrid(grid);
@@ -76,9 +95,6 @@ const Grid = (props) => {
       });
     });
     setSquares(gridSquares);
-    return () => {
-      window.removeEventListener('keydown', handleKeyPress);
-    };
   }, [numRow, numCol]);
 
   const animateShortestPath = shortestPath => {
@@ -185,7 +201,15 @@ const Grid = (props) => {
   }
 
   const handleChange = event => {
-    setAlgo(Number(event.target.value))
+    setAlgo(Number(event.target.value));
+  }
+
+  const handleOpen = () => {
+    setOpen(true);
+  }
+
+  const handleClose = (event, reason) => {
+    setOpen(false);
   }
 
   return (
@@ -221,6 +245,26 @@ const Grid = (props) => {
           })
         }
       </div>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        action={
+          <React.Fragment>
+            <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }
+      >
+        <Alert onClose={handleClose} severity="warning">
+          Breath-First Search is unweighted
+        </Alert>
+      </Snackbar>
     </>
   );
 }
