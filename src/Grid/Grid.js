@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import Navbar from './Navbar';
 import Square from './Square/Square';
 import { makeStyles } from '@material-ui/styles';
 import SquareGrid from '../structure/SquareGrid';
-import {bfs} from '../algorithms/bfs';
+import { bfs } from '../algorithms/bfs';
 import { dijskstra } from '../algorithms/dijkstra';
 
 const START_ROW = 5;
@@ -140,6 +141,8 @@ const Grid = (props) => {
     let newSquares = [...squares];
     let newGrid = grid;
 
+    if(newSquares[id].isStart || newSquares[id].isFinish) return newSquares;
+
     if(keyPressed) {
       if(!newSquares[id].hasWeight) {
         newGrid.setSquareWeight(id, 15);
@@ -177,7 +180,7 @@ const Grid = (props) => {
     setSquares(newSquares);
   }
 
-  const handleMouseUp = () => {
+  const handleMouseUp = (id) => {
     setMousePressed(false);
   }
 
@@ -187,12 +190,13 @@ const Grid = (props) => {
 
   return (
     <>
-      <select value={algo} onChange={handleChange}>
-        <option value={0}>BFS</option>
-        <option value={1}>Dijkstra</option>
-      </select>
-      <button onClick={handleClick}>Visualize</button>
-      <button onClick={clearGrid}>Clear Grid</button>
+      <Navbar 
+      selectedAlgo={algo}
+      keyPressed={keyPressed}
+      onChange={(event) => handleChange(event)}
+      handleClick={() => handleClick()}
+      clearGrid={() => clearGrid()}
+      />
       <div className={classes.grid}>
         {
           squares.map((square) => {
@@ -211,7 +215,7 @@ const Grid = (props) => {
                 inShortestPath={inShortestPath}
                 onMouseDown={(id) => handleMouseDown(id)}
                 onMouseEnter={(id) => handleMouseEnter(id)}
-                onMouseUp={() => handleMouseUp()}
+                onMouseUp={(id) => handleMouseUp(id)}
               />
             );
           })
