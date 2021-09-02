@@ -33,7 +33,8 @@ const Grid = (props) => {
   const [keyPressed, setKeyPressed] = useState(false);
   const [algo, setAlgo] = useState(1);
   const [open, setOpen] = useState(false);
-
+  const [isDragging, setDragging] = useState(false);
+  const [isStart, setStart] =useState(false);
 
   const createGrid = () => {
     const gridSquares = []
@@ -57,7 +58,7 @@ const Grid = (props) => {
   }
 
   useEffect(() => {
-    const handleKeyPress = (event) => {
+    const handleKeyPress = event => {
       if(algo === 0) {
         handleOpen();
         return;
@@ -185,18 +186,56 @@ const Grid = (props) => {
   }
 
   const handleMouseDown = id => {
-    const newSquares = toggleSquare(squares, id);
-    setSquares(newSquares);
-    setMousePressed(true);
+    if(squares[id].isStart || squares[id].isFinish) {
+      if(squares[id].isStart) {
+        setStart(true);
+      } else {
+        setStart(false);
+      }
+      setDragging(true);
+    } else {
+      const newSquares = toggleSquare(squares, id);
+      setSquares(newSquares);
+      setMousePressed(true);
+    }
   }
 
   const handleMouseEnter = id => {
-    if(!mousePressed) return;
-    const newSquares = toggleSquare(squares, id);
-    setSquares(newSquares);
+    if(isDragging) {
+      let newSquares = [...squares];
+
+      if(isStart) {
+        newSquares[id].isStart = true;
+      } else {
+        newSquares[id].isFinish = true;
+      }        
+
+      setSquares(newSquares);
+    } else {
+      if(!mousePressed) return;
+      const newSquares = toggleSquare(squares, id);
+
+      setSquares(newSquares);
+    }
+
   }
 
-  const handleMouseUp = (id) => {
+  const handleMouseLeave = id => {
+    if(isDragging) {
+      let newSquares = [...squares];
+
+      if(isStart) {
+        newSquares[id].isStart = false;
+      } else {
+        newSquares[id].isFinish = false;
+      }
+
+      setSquares(newSquares);
+    }
+  }
+
+  const handleMouseUp = id => {
+    setDragging(false);
     setMousePressed(false);
   }
 
@@ -217,13 +256,13 @@ const Grid = (props) => {
       <Navbar 
       selectedAlgo={algo}
       keyPressed={keyPressed}
-      onChange={(event) => handleChange(event)}
+      onChange={event => handleChange(event)}
       handleClick={() => handleClick()}
       clearGrid={() => clearGrid()}
       />
       <div className={classes.grid}>
         {
-          squares.map((square) => {
+          squares.map(square => {
             const {id, row, col, isStart, isFinish, isVisited, isWall, hasWeight, inShortestPath} = square;
             return (
               <Square
@@ -237,9 +276,10 @@ const Grid = (props) => {
                 isWall={isWall}
                 hasWeight={hasWeight}
                 inShortestPath={inShortestPath}
-                onMouseDown={(id) => handleMouseDown(id)}
-                onMouseEnter={(id) => handleMouseEnter(id)}
-                onMouseUp={(id) => handleMouseUp(id)}
+                onMouseDown={id => handleMouseDown(id)}
+                onMouseEnter={id => handleMouseEnter(id)}
+                onMouseLeave={id => handleMouseLeave(id)}
+                onMouseUp={id => handleMouseUp(id)}
               />
             );
           })
