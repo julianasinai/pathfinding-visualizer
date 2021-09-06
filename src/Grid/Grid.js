@@ -5,6 +5,7 @@ import SquareGrid from '../structure/SquareGrid';
 import { bfs } from '../algorithms/bfs';
 import { dijskstra } from '../algorithms/dijkstra';
 import { greedBestFirstSearch } from '../algorithms/greedBestFirstSearch';
+import { astar } from '../algorithms/astar';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 import IconButton from '@material-ui/core/IconButton';
@@ -143,6 +144,10 @@ const Grid = (props) => {
       //Greed Best-First Search
       case 2:
         result = greedBestFirstSearch(grid, start, target);
+        break;
+      //A* Search
+      case 3:
+        result = astar(grid, start, target);
         break;
       default:
         break;

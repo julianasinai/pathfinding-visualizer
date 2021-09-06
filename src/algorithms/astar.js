@@ -6,11 +6,13 @@ function heuristic(a, b) {
   return Math.abs(xa - xb) + Math.abs(ya - yb);
 }
 
-export function greedBestFirstSearch(grid, start, target) {
+export function astar(grid, start, target) {
   let frontier = new PriorityQueue();
   frontier.enqueue(start, 0);
   let cameFrom = {};
   cameFrom[start] = null;
+  let costSoFar = {};
+  costSoFar[start] = 0;
   let visitedSquaresInOrder = [start];
 
   while(!frontier.empty()) {
@@ -21,10 +23,12 @@ export function greedBestFirstSearch(grid, start, target) {
     if(current.id === target) break;
 
     grid.neighbors(current.id).forEach(next => {
-      if(!cameFrom[next]) {
+      let newCost = costSoFar[current.id] + grid.cost(current.id, next);
+      if(!costSoFar[next] || newCost < costSoFar[next]) {
+        costSoFar[next] = newCost;
         let targetCoords = grid.fromId(target);
         let nextCords = grid.fromId(next);
-        let priority = heuristic(targetCoords, nextCords);
+        let priority = newCost + heuristic(targetCoords, nextCords);
         frontier.enqueue(next, priority);
         cameFrom[next] = current.id;
         visitedSquaresInOrder.push(next);
@@ -42,6 +46,5 @@ export function greedBestFirstSearch(grid, start, target) {
   shortestPath.push(start);
   shortestPath.reverse();
   console.log("vvv", visitedSquaresInOrder)
-  //Actually the shortest path is not guarantee
   return {visitedSquaresInOrder, shortestPath};
 }

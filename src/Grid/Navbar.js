@@ -50,6 +50,7 @@ export default function Navbar(props) {
                 <MenuItem value={0}>BFS</MenuItem>
                 <MenuItem value={1}>Dijikstra</MenuItem>
                 <MenuItem value={2}>Greed Best-First Search</MenuItem>
+                <MenuItem value={3}>A* Search</MenuItem>
               </Select>
             </FormControl>
             <Button
