@@ -49,11 +49,12 @@ export default function Navbar(props) {
               >
                 <MenuItem value={0}>BFS</MenuItem>
                 <MenuItem value={1}>Dijikstra</MenuItem>
+                <MenuItem value={2}>Greed Best-First Search</MenuItem>
               </Select>
             </FormControl>
             <Button
               disabled={props.selectedAlgo === 0 ? true : false}
-              onClick={() => props.handleClick()} 
+              onClick={() => props.handleWeight()} 
               variant={props.keyPressed? "contained" : "outlined"}
               color="primary"
             >

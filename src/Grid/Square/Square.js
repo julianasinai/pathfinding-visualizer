@@ -50,8 +50,6 @@ function Square(props) {
       onMouseEnter={() => props.onMouseEnter(props.id)}
       onMouseLeave={() => props.onMouseLeave(props.id)}
       onMouseUp={() => props.onMouseUp(props.id)}
-      // onDragEnter={() => props.onDragEnter(props.id)}
-      // onDragLeave={() => props.onDragLeave(props.id)}
     ></div>
   );
 }

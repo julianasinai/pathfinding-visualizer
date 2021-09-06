@@ -4,6 +4,7 @@ import Square from './Square/Square';
 import SquareGrid from '../structure/SquareGrid';
 import { bfs } from '../algorithms/bfs';
 import { dijskstra } from '../algorithms/dijkstra';
+import { greedBestFirstSearch } from '../algorithms/greedBestFirstSearch';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 import IconButton from '@material-ui/core/IconButton';
@@ -34,7 +35,9 @@ const Grid = (props) => {
   const [algo, setAlgo] = useState(1);
   const [open, setOpen] = useState(false);
   const [isDragging, setDragging] = useState(false);
-  const [isStart, setStart] =useState(false);
+  const [isStart, setIsStart] =useState(false);
+  const [start, setStart] = useState(Math.min(props.NUM_COL-1, Math.max(0, START_COL))+ Math.min(props.NUM_ROW-1, Math.max(0, START_ROW))*props.NUM_COL);
+  const [target, setTarget] = useState(Math.min(props.NUM_COL-1, Math.max(0, FINISH_COL))+ Math.min(props.NUM_ROW-1, Math.max(0, FINISH_ROW))*props.NUM_COL);
 
   const createGrid = () => {
     const gridSquares = []
@@ -127,8 +130,6 @@ const Grid = (props) => {
   }
 
   const visualize = () => {
-    const start = grid.toId(START_COL, START_ROW);
-    const target = grid.toId(FINISH_COL, FINISH_ROW);
     let result;
     switch(algo) {
       // BFS
@@ -138,6 +139,10 @@ const Grid = (props) => {
       // Dijkstra
       case 1:
         result = dijskstra(grid, start, target);
+        break;
+      //Greed Best-First Search
+      case 2:
+        result = greedBestFirstSearch(grid, start, target);
         break;
       default:
         break;
@@ -152,6 +157,10 @@ const Grid = (props) => {
   const handleClick = () => {
     console.log("clicked");
     visualize();
+  }
+
+  const handleWeight = () => {
+    setKeyPressed(keyPressed => !keyPressed)
   }
 
   const toggleSquare = (squares, id) => {
@@ -182,15 +191,17 @@ const Grid = (props) => {
 
   const clearGrid = () => {
     const gridSquares = createGrid();
+    setStart(Math.min(props.NUM_COL-1, Math.max(0, START_COL))+ Math.min(props.NUM_ROW-1, Math.max(0, START_ROW))*props.NUM_COL);
+    setTarget(Math.min(props.NUM_COL-1, Math.max(0, FINISH_COL))+ Math.min(props.NUM_ROW-1, Math.max(0, FINISH_ROW))*props.NUM_COL);
     setSquares(gridSquares);
   }
 
   const handleMouseDown = id => {
     if(squares[id].isStart || squares[id].isFinish) {
       if(squares[id].isStart) {
-        setStart(true);
+        setIsStart(true);
       } else {
-        setStart(false);
+        setIsStart(false);
       }
       setDragging(true);
     } else {
@@ -235,6 +246,13 @@ const Grid = (props) => {
   }
 
   const handleMouseUp = id => {
+    if(squares[id].isStart || squares[id].isFinish) {
+      if(squares[id].isStart) {
+        setStart(Number(id));
+      } else {
+        setTarget(Number(id))
+      }
+    }
     setDragging(false);
     setMousePressed(false);
   }
@@ -258,6 +276,7 @@ const Grid = (props) => {
       keyPressed={keyPressed}
       onChange={event => handleChange(event)}
       handleClick={() => handleClick()}
+      handleWeight={() => handleWeight()}
       clearGrid={() => clearGrid()}
       />
       <div className={classes.grid}>
