@@ -23,7 +23,9 @@ export default class SquareGrid extends Graph {
     for (let x = 0; x < width; x++) {
       for (let y = 0; y < height; y++) {
         let id = this.toId(x, y);
-        NEIGHBORS_LOCATION.forEach((dir) => {
+        let neighbors = NEIGHBORS_LOCATION;
+        if( (x + y) % 2 === 0) neighbors.reverse();
+        neighbors.forEach((dir) => {
           let x_neighbor = x + dir[0], y_neighbor = y + dir[1];
           if (this.inBounds(x_neighbor, y_neighbor) && !this.isWall(id)) {
             this.edges[id].push(this.toId(x_neighbor, y_neighbor));
@@ -62,7 +64,13 @@ export default class SquareGrid extends Graph {
   };
 
   cost(fromId, toId) {
-    return this.weights[toId]
+    let [xa, ya] = this.fromId(fromId);
+    let [xb, yb] = this.fromId(toId);
+    let adjust = 0
+    if((xa + xb) % 2 === 0 && xb !== xa) adjust = 1;
+    if((xa + xb) % 2 === 1 && yb !== ya) adjust = 1;
+    
+    return this.weights[toId] + 0.001*adjust;
   };
 
   setSquareWeight(id, weight) {
