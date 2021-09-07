@@ -24,7 +24,7 @@ export function astar(grid, start, target) {
 
     grid.neighbors(current.id).forEach(next => {
       let newCost = costSoFar[current.id] + grid.cost(current.id, next);
-      if(!costSoFar[next] || newCost < costSoFar[next]) {
+      if(!costSoFar[next]|| newCost < costSoFar[next]) {
         costSoFar[next] = newCost;
         let targetCoords = grid.fromId(target);
         let nextCords = grid.fromId(next);

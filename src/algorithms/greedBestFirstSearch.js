@@ -9,6 +9,8 @@ function heuristic(a, b) {
 export function greedBestFirstSearch(grid, start, target) {
   let frontier = new PriorityQueue();
   frontier.enqueue(start, 0);
+  let reached = new Set();
+  reached.add(start);
   let cameFrom = {};
   cameFrom[start] = null;
   let visitedSquaresInOrder = [start];
@@ -21,11 +23,12 @@ export function greedBestFirstSearch(grid, start, target) {
     if(current.id === target) break;
 
     grid.neighbors(current.id).forEach(next => {
-      if(!cameFrom[next]) {
+      if(!reached.has(next)) {
         let targetCoords = grid.fromId(target);
         let nextCords = grid.fromId(next);
         let priority = heuristic(targetCoords, nextCords);
         frontier.enqueue(next, priority);
+        reached.add(next);
         cameFrom[next] = current.id;
         visitedSquaresInOrder.push(next);
       }
