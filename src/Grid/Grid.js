@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
+import Tutorial from './Tutorial';
 import Square from './Square/Square';
 import SquareGrid from '../structure/SquareGrid';
 import { bfs } from '../algorithms/bfs';
@@ -284,6 +285,7 @@ const Grid = (props) => {
       handleWeight={() => handleWeight()}
       clearGrid={() => clearGrid()}
       />
+      <Tutorial />
       <div className={classes.grid}>
         {
           squares.map(square => {
