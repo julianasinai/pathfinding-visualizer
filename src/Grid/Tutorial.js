@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
@@ -7,10 +7,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
-import Typography from '@material-ui/core/Typography';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,41 +16,52 @@ const useStyles = makeStyles((theme) => ({
   actions: {
     display: 'flex',
     justifyContent: 'space-between',
+  },
+  dialogPaper: {
+    height: '300px',
   }
 }));
 
 const tutorialSteps = [
   {
+    title: "Pathfinding Visualizer Tutorial",
+    text: <React.Fragment>{`Hi there 👋! Here is a step-by-step guide to the features of this application. If you like to skip this tutorial, you can check it later by clicking `}<HelpOutlineIcon style={{marginBottom: "-5px"}}/>{`.`}</React.Fragment>
+  },
+  {
     title: 'What is a pathfinding algorithm?',
-    text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    text: `It is an algorithm that deals with the problem of finding a path, not necessarily the optimal one, between two points, start and target nodes. In this application, the graph is represented by a grid, where you can move from one tile to another by making orthogonal movements, each with the cost of 1.`,
   },
   { 
     title: 'Selecting an algorithm',
-    text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    text: "The algorithms available are listed in the dropdown menu. Some algorithms perform on weighted graphs, while others on unweighted ones. In addition, not all of them return the shortest path.",
   },
   { 
     title: 'Avaliable algoritms',
-    text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    text: "Breadth-First Search(unweighted) Dijkstra(weighted) Greed Best-First(weighted) Search A* Search(weighted)",
   },
   {
-    title: 'Adding walls and Wights',
-    text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    title: 'Adding walls and Weights',
+    text: "You can not pass through walls. However, weights are passable, but moving through them costs 15 times more.",
   },
   { 
     title: 'Dragging nodes',
-    text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.", 
+    text: "You can change the start and target nodes' positions by clicking and dragging them over the grid.", 
   },
   { 
     title: 'Visualize!',
-    text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    text: "After the grid is set as you want, click Visualize to see the selected algorithm in action. Finally, you can also clear the grid and start over.",
   },
 ];
 
-export default function Tutorial() {
+const Tutorial = ({ tutorialRef }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(true);
   const [activeStep, setActiveStep] = useState(0);
   const maxSteps = tutorialSteps.length;
+
+  useEffect(() => {
+    tutorialRef.current = handleClickOpen
+  });
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -78,6 +86,7 @@ export default function Tutorial() {
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        classes={{paper: classes.dialogPaper}}
       >
         <DialogTitle id="alert-dialog-title">
           {tutorialSteps[activeStep].title}
@@ -88,7 +97,7 @@ export default function Tutorial() {
           </DialogContentText>
         </DialogContent>
         <DialogActions className={classes.actions}>
-          <Button onClick={handleClose} color="primary" variant="outlined">
+          <Button onClick={handleClose} color="primary" variant="contained">
             Skip
           </Button>
           <ButtonGroup color="primary" variant="contained">
@@ -99,4 +108,6 @@ export default function Tutorial() {
       </Dialog>
     </div>
   );
-}
+};
+
+export default Tutorial;

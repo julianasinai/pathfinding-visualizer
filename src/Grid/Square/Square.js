@@ -44,7 +44,7 @@ function Square(props) {
   : '';
 
   return (
-    <div 
+    <div
       className={`${classes.square} ${extraClass}`}
       onMouseDown={() => props.onMouseDown(props.id)}
       onMouseEnter={() => props.onMouseEnter(props.id)}

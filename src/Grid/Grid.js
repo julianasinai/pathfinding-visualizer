@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Navbar from './Navbar';
 import Tutorial from './Tutorial';
 import Square from './Square/Square';
@@ -7,6 +7,8 @@ import { bfs } from '../algorithms/bfs';
 import { dijskstra } from '../algorithms/dijkstra';
 import { greedBestFirstSearch } from '../algorithms/greedBestFirstSearch';
 import { astar } from '../algorithms/astar';
+import Fab from '@material-ui/core/Fab';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 import IconButton from '@material-ui/core/IconButton';
@@ -21,12 +23,19 @@ const FINISH_COL = 10;
 const useStyles = makeStyles({
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(50, 25px)',//'repeat(50 1fr)'
+    gridTemplateColumns: `repeat(${Math.floor(window.innerWidth/27)}, 25px)`,//'repeat(50 1fr)'
     gridGap: '3px',
+    marginTop: '64px',
   },
+  fab: {
+    position: 'absolute',
+    bottom: '20px',
+    right: '20px',
+  }
 });
 
 const Grid = (props) => {
+  const tutorialRef = useRef();
   const classes = useStyles();
   const numRow = props.NUM_ROW;
   const numCol = props.NUM_COL;
@@ -285,7 +294,7 @@ const Grid = (props) => {
       handleWeight={() => handleWeight()}
       clearGrid={() => clearGrid()}
       />
-      <Tutorial />
+      <Tutorial tutorialRef={tutorialRef} />
       <div className={classes.grid}>
         {
           squares.map(square => {
@@ -311,6 +320,14 @@ const Grid = (props) => {
           })
         }
       </div>
+      <Fab
+        size="small"
+        aria-label="help"
+        className={classes.fab}
+        onClick={() => tutorialRef.current()}
+      >
+        <HelpOutlineIcon />
+      </Fab>
       <Snackbar
         anchorOrigin={{
           vertical: 'bottom',

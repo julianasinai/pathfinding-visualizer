@@ -25,8 +25,10 @@ const useStyles = makeStyles((theme) => ({
   },
   menu: {
     display: "flex",
-    minWidth: 500,
     justifyContent: "space-between",
+    "& > *": {
+      margin: theme.spacing(1),
+    }
   },
 }));
 
@@ -48,7 +50,7 @@ export default function Navbar(props) {
                 onChange={(event) => props.onChange(event)}
               >
                 <MenuItem value={0}>BFS</MenuItem>
-                <MenuItem value={1}>Dijikstra</MenuItem>
+                <MenuItem value={1}>Dijkstra</MenuItem>
                 <MenuItem value={2}>Greed Best-First Search</MenuItem>
                 <MenuItem value={3}>A* Search</MenuItem>
               </Select>
